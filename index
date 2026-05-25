@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>BungaTracker · Kehamilan & 1000 Hari Pantang | KKM</title>
+  <meta name="theme-color" content="#b45f7a">
+  <meta name="description" content="Aplikasi penjagaan kehamilan & pantang berpandukan KKM">
+  <link rel="manifest" id="manifestLink">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BungaTracker">
+  <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cGF0aCBzdHJva2U9IiNiNDVmN2EiIGZpbGw9Im5vbmUiIGQ9Ik0xMDAsOTJjLTYsNy0xNyw0LTIyLTFsMTMtMTNjNSw1LDE2LDgsMjIsMXoiLz48cGF0aCBmaWxsPSIjYjQ1ZjdhIiBkPSJNMzAsODBjMC05LDYtMTcsMTUtMThsMi0yYzAsMCwwLDAtMiwyYy03LDAsMTMsNiwwLDE4LDAsMGMtNCw0LTE2LDQsMTktM2w4LDIxYzMsMTgsMTUsMjUtMjksMTRaIi8+PGNpcmNsZSBjeD0iOTYiIGN5PSI5NiIgcj0iMjRweCIgZmlsbD0iI2I0NWY3YSIgb3BhY2l0eT0iMC4zIi8+PC9zdmc+">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alice&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #b45f7a; --primary-soft: #e894a9; --primary-light: #fce4ec; --primary-bg: #fff6f9;
+      --accent: #c9a1b8; --green: #00b894; --amber: #f4c542; --text: #3e3444; --text-light: #a88b99;
+      --bg: #fbe9f1; --card-bg: #fffafc; --white: #ffffff; --menu-red: #b03a2e; --menu-red-light: #fdf2f2;
+      --shadow: 0 18px 35px rgba(213,154,178,0.15); --radius: 2.2rem; --radius-sm: 1.2rem;
+      --transition: 0.25s ease; --safe-bottom: env(safe-area-inset-bottom, 12px);
+      --growth-primary: #b45f7a; --growth-soft: #e894a9; --growth-light: #fce4ec;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(145deg, #fbe9f1 0%, #f8f0f5 50%, #fef5f8 100%);
+      color: var(--text); min-height: 100vh; padding: 1rem 1rem calc(1rem + var(--safe-bottom));
+      display: flex; justify-content: center; align-items: flex-start;
+    }
+    .app-shell {
+      max-width: 960px; width: 100%; background: var(--card-bg); border-radius: var(--radius);
+      box-shadow: var(--shadow); border: 1px solid rgba(255,220,230,0.7); overflow: hidden;
+    }
+    .app-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.3rem 1.6rem; background: var(--white); border-bottom: 1px solid var(--primary-light);
+      flex-wrap: wrap; gap: 0.6rem;
+    }
+    .logo { display: flex; align-items: center; gap: 0.5rem; }
+    .logo i { font-size: 1.8rem; color: var(--primary-soft); filter: drop-shadow(0 4px 6px rgba(232,148,169,0.35)); }
+    .logo h1 { font-family: 'Alice', serif; font-size: 1.5rem; color: var(--primary); font-weight: 400; }
+    .kkm-badge {
+      background: #f7d7e0; padding: 0.35rem 0.9rem; border-radius: 40px;
+      font-size: 0.75rem; font-weight: 600; color: #9b4b64; display: flex; align-items: center; gap: 0.3rem;
+      border: 1px solid rgba(186,118,140,0.3); white-space: nowrap;
+    }
+    .main-nav {
+      display: flex; gap: 0.35rem; padding: 0.7rem 0.9rem; background: var(--white);
+      overflow-x: auto; border-bottom: 1px solid var(--primary-light);
+    }
+    .main-tab-btn {
+      padding: 0.55rem 0.95rem; font-size: 0.75rem; font-weight: 600;
+      border: 2px solid transparent; background: #f5f0f3; color: #8b7b85;
+      border-radius: 30px; cursor: pointer; transition: var(--transition);
+      white-space: nowrap; display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0;
+    }
+    .main-tab-btn:hover { background: #ede3e8; }
+    .main-tab-btn.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary-soft); font-weight: 700; }
+    .view-container { display: none; padding: 1rem 1.2rem; animation: fadeSlide 0.35s; }
+    .view-container.active { display: block; }
+    @keyframes fadeSlide { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+    .card {
+      background: var(--white); border-radius: var(--radius-sm); padding: 1.2rem;
+      box-shadow: 0 8px 24px rgba(200,160,175,0.08); border: 1px solid #fce4ec; margin-bottom: 1rem;
+    }
+    .card h2 {
+      font-family: 'Alice', serif; font-size: 1.15rem; color: var(--primary);
+      margin: 0 0 0.8rem; display: flex; align-items: center; gap: 0.4rem;
+      border-bottom: 1px solid var(--primary-light); padding-bottom: 0.5rem; font-weight: 400;
+    }
+    .countdown-card {
+      text-align: center; background: linear-gradient(135deg, #fff0f5 0%, #ffe9f2 100%);
+      border: 2px solid var(--primary-light);
+    }
+    .countdown-number {
+      font-size: 3.5rem; font-weight: 700; color: var(--primary); line-height: 1;
+      font-family: 'Alice', serif;
+    }
+    .countdown-label {
+      font-size: 0.9rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .trimester-badge {
+      display: inline-block; padding: 0.3rem 1rem; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 600; margin-top: 0.5rem;
+    }
+    .trimester-1 { background: #e8f5e9; color: #2e7d32; }
+    .trimester-2 { background: #fff3e0; color: #e65100; }
+    .trimester-3 { background: #fce4ec; color: #b71c1c; }
+    .dual-progress { display: flex; justify-content: space-evenly; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .progress-card {
+      background: var(--primary-bg); border-radius: 2rem; padding: 1.2rem 0.7rem;
+      display: flex; flex-direction: column; align-items: center; border: 1px solid #fce4ec;
+      flex: 1 1 140px; transition: transform 0.2s;
+    }
+    .ring-container { position: relative; width: 95px; height: 95px; margin-bottom: 0.4rem; }
+    .ring { transform: rotate(-90deg); width: 100%; height: 100%; }
+    .bg-circle { fill: none; stroke: #f3d8e2; stroke-width: 7; }
+    .progress-circle { fill: none; stroke: var(--primary-soft); stroke-width: 7; stroke-linecap: round; transition: stroke-dashoffset 0.7s; }
+    .postpartum-circle { stroke: var(--accent); }
+    .ring-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+    .ring-text .days { font-size: 1.5rem; font-weight: 700; color: var(--primary); line-height: 1.1; }
+    .ring-text .label { font-size: 0.6rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.3px; }
+    .week-badge { background: #ffecf1; border-radius: 20px; padding: 0.25rem 0.8rem; font-size: 0.7rem; font-weight: 600; color: #c96480; border: 1px solid #ffdbe6; margin-top: 0.2rem; }
+    .date-input, .appt-input {
+      width: 100%; padding: 0.6rem 1rem; border: 1px solid #f0cdd8; border-radius: 2.5rem;
+      font-family: 'Inter', sans-serif; font-size: 0.85rem; color: #4a3340; background: var(--white);
+      margin: 0.3rem 0 0.7rem; transition: border 0.2s;
+    }
+    .date-input:focus, .appt-input:focus { outline: none; border-color: var(--primary-soft); box-shadow: 0 0 0 3px rgba(232,148,169,0.12); }
+    .btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-top: 0.5rem; }
+    .btn {
+      padding: 0.6rem 1.1rem; border-radius: 3rem; font-weight: 600; font-size: 0.8rem; cursor: pointer;
+      border: 1px solid #f4ced9; transition: var(--transition); display: inline-flex; align-items: center;
+      gap: 0.35rem; background: #f9e4ec; color: #7b4a5c; user-select: none;
+    }
+    .btn:hover { background: #f1cdd9; color: #502c38; }
+    .btn.primary-btn { background: var(--primary-soft); color: white; border: none; box-shadow: 0 6px 18px rgba(232,148,169,0.3); }
+    .btn.small-btn { padding: 0.4rem 0.8rem; font-size: 0.7rem; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .kick-section, .contraction-section, .breastfeeding-section {
+      background: var(--primary-bg); border-radius: var(--radius-sm); padding: 1.2rem; border: 1px solid #fce4ec; margin-bottom: 1rem;
+    }
+    .kick-header { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+    .kick-count { font-size: 2.6rem; font-weight: 700; color: var(--primary); line-height: 1; }
+    .kick-target { font-size: 0.8rem; color: var(--text-light); }
+    .kick-btn {
+      background: var(--primary-soft); color: white; border: none; border-radius: 50%; width: 50px; height: 50px;
+      font-size: 2rem; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 20px rgba(232,148,169,0.35); cursor: pointer; transition: var(--transition); line-height: 1;
+    }
+    .kick-btn:hover { background: #d97d95; transform: scale(1.05); }
+    .kick-btn-secondary {
+      background: #f1cdd9; color: var(--primary); border: none; border-radius: 50%; width: 38px; height: 38px;
+      font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: var(--transition);
+    }
+    .timer-display { font-size: 2.2rem; font-weight: 700; color: var(--primary); text-align: center; margin: 0.5rem 0; }
+    .log-list { max-height: 180px; overflow-y: auto; font-size: 0.8rem; }
+    .log-item { display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px dashed #eacecf; }
+    .calendar { margin-top: 1rem; background: var(--white); border-radius: 1.5rem; padding: 0.8rem; border: 1px solid #f0cdd8; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); text-align: center; gap: 3px; }
+    .cal-cell { aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.75rem; position: relative; }
+    .cal-cell.today { background: #ffe9f0; font-weight: 700; }
+    .kick-dot { position: absolute; bottom: 2px; width: 6px; height: 6px; border-radius: 50%; }
+    .kick-dot.complete { background: #a6d9a6; } .kick-dot.partial { background: var(--amber); } .kick-dot.missed { background: var(--primary-soft); }
+    .timeline { background: #fff0f4; border-radius: 1.6rem; padding: 1rem 0.9rem; border: 1px solid #ffdbe6; max-height: 350px; overflow-y: auto; }
+    .timeline-item { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 0.8rem; font-size: 0.82rem; border-bottom: 1px dashed #eacecf; padding-bottom: 0.7rem; }
+    .dot { width: 10px; height: 10px; background: var(--primary-soft); border-radius: 50%; margin-top: 0.2rem; flex-shrink: 0; box-shadow: 0 0 0 3px #fbdae3; }
+    .vaccine-tag { background: #ffe9f0; padding: 0.1rem 0.5rem; border-radius: 15px; font-size: 0.65rem; font-weight: 700; color: #b15c76; margin-left: 0.3rem; white-space: nowrap; }
+    .status-badge { display: inline-block; font-size: 0.62rem; font-weight: 600; padding: 2px 7px; border-radius: 10px; margin-left: 0.3rem; }
+    .status-badge.completed { background: #d4edda; color: #155724; }
+    .status-badge.upcoming { background: #fff3cd; color: #856404; }
+    .side-suggestion { background: #e8f8f5; border-radius: 10px; padding: 0.5rem 0.7rem; font-size: 0.72rem; color: #1e8449; margin: 0.5rem 0; }
+    .appt-form { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+    .appt-list { list-style: none; max-height: 200px; overflow-y: auto; }
+    .appt-item { display: flex; justify-content: space-between; padding: 0.45rem 0; border-bottom: 1px dashed #eacecf; font-size: 0.8rem; }
+    .delete-btn { background: none; border: none; color: #c96480; cursor: pointer; font-size: 0.85rem; }
+    .list-item { display: flex; align-items: center; justify-content: space-between; padding: 0.45rem 0; font-size: 0.8rem; border-bottom: 1px solid #f5eef1; }
+    .list-item.checked span { text-decoration: line-through; color: #b2bec3; }
+    .category-header { background: #fdf2f5; border-radius: 12px; padding: 0.45rem 0.7rem; font-weight: 700; color: #8b5b6e; margin: 0.5rem 0 0.2rem; }
+    .cat-progress { width: 100%; height: 4px; background: #f3d8e2; border-radius: 2px; margin-top: 0.2rem; }
+    .cat-progress-fill { height: 100%; background: var(--primary-soft); border-radius: 2px; transition: width 0.4s; }
+    .meal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 0.8rem; }
+    .meal-card { background: var(--white); border-radius: var(--radius-sm); padding: 1rem; border-top: 6px solid var(--menu-red); position: relative; }
+    .meal-card h3 { color: var(--menu-red); font-family: 'Alice', serif; font-size: 1rem; margin-bottom: 0.5rem; }
+    .btn-recipe { background: #d35400; color: white; border: none; flex:1; padding: 0.5rem; border-radius: 20px; cursor: pointer; font-size: 0.7rem; font-weight: 600; }
+    .btn-grocery { background: #27ae60; color: white; border: none; flex:1; padding: 0.5rem; border-radius: 20px; cursor: pointer; font-size: 0.7rem; font-weight: 600; }
+    .modal { display: none; position: fixed; z-index: 100; left:0; top:0; width:100%; height:100%; background: rgba(0,0,0,0.45); animation: fadeIn 0.2s; }
+    .modal-content { background: var(--white); margin: 12% auto; padding: 1.3rem; width:90%; max-width:420px; border-radius: 1.6rem; position: relative; }
+    .close { position: absolute; top:12px; right:16px; color:#999; font-size:1.5rem; cursor:pointer; }
+    .copy-btn { background: #3498db; color: white; border: none; padding: 0.6rem; width: 100%; border-radius: 25px; cursor: pointer; margin-top: 0.8rem; font-weight: 600; }
+    .footer-note { text-align: center; font-size: 0.68rem; color: #b2959e; padding: 1rem; border-top: 1px solid #f7dee6; }
+    @media (max-width: 420px) { .dual-progress { flex-direction: column; align-items: center; } }
+
+    /* Growth tab styles */
+    #viewGrowth .card h3 { font-size: 1.2rem; color: var(--primary); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.4rem; }
+    #viewGrowth .timeline { background: #fff0f4; }
+    .growth-week-selector { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 10px 0 16px; }
+    .growth-week-selector input[type="range"] { flex:1; min-width:150px; accent-color:var(--primary); }
+    .growth-week-selector .week-display { font-weight:700; font-size:1.3rem; color:var(--primary); min-width:90px; text-align:center; background:#fdf6fc; padding:6px 14px; border-radius:20px; border:2px solid var(--primary-soft); }
+    .growth-week-selector button { padding:8px 16px; border-radius:20px; border:2px solid var(--primary-soft); background:#fff; cursor:pointer; font-weight:600; color:var(--primary); transition:var(--transition); font-family:'Inter',sans-serif; font-size:0.85rem; }
+    .growth-week-selector button:hover { background:#f6f0fa; }
+    .stats-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 10px 0; }
+    .stat-card { flex:1; min-width:110px; background:var(--card-bg); border-radius:var(--radius-sm); padding:16px 14px; text-align:center; border:2px solid var(--primary-light); transition:var(--transition); }
+    .stat-card:hover { border-color:var(--primary-soft); box-shadow:var(--shadow); }
+    .stat-card .stat-value { font-size:1.6rem; font-weight:700; color:var(--primary); }
+    .stat-card .stat-unit { font-size:0.8rem; color:var(--text-light); }
+    .stat-card .stat-label { font-size:0.78rem; font-weight:600; color:var(--text); margin-top:2px; }
+    .chart-visual { display: flex; align-items: flex-end; gap: 10px; height: 180px; padding: 10px 0; flex-wrap: wrap; justify-content: center; }
+    .chart-bar-wrapper { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .chart-bar { width: 38px; border-radius: 8px 8px 4px 4px; transition: height 0.6s ease; min-height: 8px; }
+    .chart-bar.pink-bar { background: linear-gradient(180deg, #f8b0c8, var(--primary-soft)); }
+    .chart-bar.purple-bar { background: linear-gradient(180deg, #c9a0d8, #9b6db5); }
+    .chart-label { font-size:0.7rem; font-weight:600; color:var(--text-light); text-align:center; }
+    .chart-value { font-size:0.7rem; font-weight:700; color:var(--primary); }
+    .progress-container { margin:10px 0; }
+    .progress-label { display:flex; justify-content:space-between; font-size:0.85rem; font-weight:600; color:var(--text); margin-bottom:4px; }
+    .progress-bar { height:14px; background:#f0e4f5; border-radius:10px; overflow:hidden; }
+    .progress-fill { height:100%; border-radius:10px; transition:width 0.6s ease; }
+    .progress-fill.pink { background:linear-gradient(90deg, #f08ca8, var(--primary-soft)); }
+    .progress-fill.purple { background:linear-gradient(90deg, #b085c4, #7c4d8c); }
+    .progress-fill.green { background:linear-gradient(90deg, #7ec89b, #5aad78); }
+    .progress-fill.blue { background:linear-gradient(90deg, #7eb8d8, #5a9dbe); }
+    .accordion { border-radius:var(--radius-sm); overflow:hidden; margin:8px 0; border:1px solid var(--primary-light); }
+    .accordion-header { background:#fdf6fc; padding:14px 18px; cursor:pointer; font-weight:600; color:var(--primary); display:flex; justify-content:space-between; align-items:center; transition:var(--transition); user-select:none; font-size:0.95rem; }
+    .accordion-header:hover { background:#f9f0fb; }
+    .accordion-header .arrow { transition:var(--transition); font-size:1rem; }
+    .accordion-body { max-height:0; overflow:hidden; transition:max-height 0.4s ease, padding 0.4s ease; background:#fff; }
+    .accordion-body.open { max-height:800px; padding:16px 18px; }
+    .table-wrapper { overflow-x:auto; border-radius:var(--radius-sm); border:1px solid var(--primary-light); margin-top:0.5rem; }
+    table { width:100%; border-collapse:collapse; font-size:0.9rem; min-width:600px; }
+    table thead { background:var(--primary); color:#fff; }
+    table thead th { padding:12px 14px; text-align:center; font-weight:600; font-size:0.85rem; letter-spacing:0.3px; white-space:nowrap; }
+    table tbody td { padding:10px 14px; text-align:center; border-bottom:1px solid var(--primary-light); color:var(--text); }
+    table tbody tr { transition:var(--transition); }
+    table tbody tr:hover { background:#fdf6fc; }
+    table tbody tr:nth-child(even) { background:#fefafe; }
+    .highlight-box { background:linear-gradient(135deg, #fef3f7 0%, #fdf0f8 100%); border-left:5px solid var(--primary-soft); border-radius:var(--radius-sm); padding:16px 20px; margin:14px 0; font-weight:500; color:#7a3b52; font-size:0.95rem; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <div class="app-header">
+    <div class="logo"><i class="fas fa-seedling"></i><h1>BungaTracker</h1></div>
+    <div class="kkm-badge"><i class="fas fa-check-circle"></i> KKM Aligned</div>
+  </div>
+  <div class="main-nav" id="mainNav">
+    <button class="main-tab-btn active" data-tab="dashboard"><i class="fas fa-heart"></i> Dashboard</button>
+    <button class="main-tab-btn" data-tab="growth"><i class="fas fa-chart-line"></i> Tumbesaran</button>
+    <button class="main-tab-btn" data-tab="baby"><i class="fas fa-baby"></i> Bayi</button>
+    <button class="main-tab-btn" data-tab="kkm"><i class="fas fa-syringe"></i> KKM</button>
+    <button class="main-tab-btn" data-tab="pantang"><i class="fas fa-utensils"></i> Menu</button>
+    <button class="main-tab-btn" data-tab="lists"><i class="fas fa-list-check"></i> Senarai</button>
+  </div>
+
+  <!-- Dashboard View -->
+  <div class="view-container active" id="viewDashboard">
+    <div class="card countdown-card" id="countdownCard"></div>
+    <div class="dual-progress" id="progressRings"></div>
+    <div class="card" style="text-align:center;">
+      <label style="font-size:0.78rem;font-weight:600;color:#9b7b87;"><i class="far fa-calendar-alt"></i> Tarikh Haid Terakhir (LMP)</label>
+      <input type="date" id="lmpInput" class="date-input" aria-label="LMP">
+      <label style="font-size:0.78rem;font-weight:600;color:#9b7b87;margin-top:0.4rem;"><i class="fas fa-baby"></i> Tarikh Jangkaan Bersalin (EDD)</label>
+      <input type="date" id="eddInput" class="date-input" aria-label="EDD">
+      <label style="font-size:0.78rem;font-weight:600;color:#9b7b87;margin-top:0.4rem;"><i class="fas fa-baby-carriage"></i> Tarikh Lahir Sebenar (jika sudah)</label>
+      <input type="date" id="birthInput" class="date-input" aria-label="Tarikh Lahir">
+      <div class="btn-row"><button class="btn" id="updateDatesBtn"><i class="fas fa-sync-alt"></i> Kemaskini</button></div>
+      <p style="font-size:0.65rem;margin-top:0.3rem;color:#b2939f;">⚬ KKM sarankan buka buku pink sebelum 12 minggu ⚬</p>
+    </div>
+    <div id="kickWrapper" style="display:none;"></div>
+    <div id="contractionWrapper"></div>
+    <div id="breastfeedingWrapper" style="display:none;"></div>
+    <div class="card" id="apptCard"></div>
+  </div>
+
+  <!-- Tumbesaran View -->
+  <div class="view-container" id="viewGrowth">
+    <div class="card">
+      <h3>📅 Trimester Kehamilan</h3>
+      <div class="timeline" style="display:flex; gap:10px; flex-wrap:wrap; background:transparent; border:none;">
+        <div class="stat-card" style="border-color:var(--primary-soft);"><span>🌱</span><strong>Trimester 1</strong><br><small>Minggu 1–13</small></div>
+        <div class="stat-card"><span>🍊</span><strong>Trimester 2</strong><br><small>Minggu 14–26</small></div>
+        <div class="stat-card"><span>🎃</span><strong>Trimester 3</strong><br><small>Minggu 27–40</small></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🔍 Pilih Minggu Kehamilan</h3>
+      <div class="growth-week-selector">
+        <button id="growthPrevBtn">◀ Sebelum</button>
+        <input type="range" id="growthWeekSlider" min="4" max="40" value="12" step="1">
+        <span class="week-display" id="growthWeekDisplay">Minggu 12</span>
+        <button id="growthNextBtn">Seterusnya ▶</button>
+      </div>
+      <div id="growthFetalInfo"></div>
+      <div class="highlight-box"><strong>💡 Nota KKM:</strong> Semua ukuran adalah anggaran. Pemeriksaan antenatal berkala di Klinik Kesihatan adalah penting.</div>
+    </div>
+    <div class="card">
+      <h3>📋 Jadual Rujukan Tumbesaran Janin (KKM)</h3>
+      <div class="table-wrapper">
+        <table id="fetalTable">
+          <thead><tr><th>Minggu</th><th>Panjang (CRL)</th><th>Anggaran Berat</th><th>Saiz</th><th>Perkembangan</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h3>⚖️ Kenaikan Berat Ibu Mengikut BMI (KKM)</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>BMI Pra-Hamil</th><th>Julat (kg/m²)</th><th>Jumlah Kenaikan</th><th>Kadar Trimester 2&3</th></tr></thead>
+          <tbody>
+            <tr><td>Kurang berat</td><td>&lt;18.5</td><td>12.5–18 kg</td><td>~0.5 kg/minggu</td></tr>
+            <tr><td>Normal</td><td>18.5–24.9</td><td>11.5–16 kg</td><td>~0.4 kg/minggu</td></tr>
+            <tr><td>Lebih berat</td><td>25.0–29.9</td><td>7.0–11.5 kg</td><td>~0.3 kg/minggu</td></tr>
+            <tr><td>Obes</td><td>≥30.0</td><td>5.0–9.0 kg</td><td>~0.2 kg/minggu</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h3>👶 Tumbesaran Bayi 0–12 Bulan (WHO/KKM)</h3>
+      <div class="table-wrapper">
+        <table id="postnatalTable">
+          <thead><tr><th>Umur (Bulan)</th><th>Berat ♂ (kg)</th><th>Berat ♀ (kg)</th><th>Panjang ♂ (cm)</th><th>Panjang ♀ (cm)</th><th>Lilitan Kepala ♂ (cm)</th><th>Lilitan Kepala ♀ (cm)</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="highlight-box" style="margin-top:1rem;"><strong>📌 Amalan KKM:</strong> Pertumbuhan diplot pada carta WHO dalam Buku Rekod Kesihatan Bayi. Ukuran antara persentil ke-3 dan ke-97 dianggap normal.</div>
+      <div class="stats-row">
+        <div class="stat-card"><span class="stat-value">~3.3<span class="stat-unit">kg</span></span><div class="stat-label">Median Berat Lahir</div></div>
+        <div class="stat-card"><span class="stat-value">~50<span class="stat-unit">cm</span></span><div class="stat-label">Median Panjang Lahir</div></div>
+        <div class="stat-card"><span class="stat-value">~2×</span><div class="stat-label">Berat Gandakan 5 Bulan</div></div>
+        <div class="stat-card"><span class="stat-value">~3×</span><div class="stat-label">Berat Tiga Kali 12 Bulan</div></div>
+      </div>
+      <h3>📈 Halaju Tumbesaran</h3>
+      <div class="accordion">
+        <div class="accordion-header"><span>0–3 Bulan</span><span class="arrow">▼</span></div>
+        <div class="accordion-body"><p>👶 Kenaikan berat: ~150–200g/minggu (600–900g/bulan)</p><p>📏 Panjang: ~3.5 cm/bulan</p><p>🧠 Lilitan kepala: ~2 cm/bulan</p></div>
+      </div>
+      <div class="accordion">
+        <div class="accordion-header"><span>3–6 Bulan</span><span class="arrow">▼</span></div>
+        <div class="accordion-body"><p>👶 Kenaikan berat: ~100–140g/minggu (500–600g/bulan)</p><p>📏 Panjang: ~2.0 cm/bulan</p><p>🧠 Lilitan kepala: ~1 cm/bulan</p></div>
+      </div>
+      <div class="accordion">
+        <div class="accordion-header"><span>6–12 Bulan</span><span class="arrow">▼</span></div>
+        <div class="accordion-body"><p>👶 Kenaikan berat: ~70–90g/minggu (300–400g/bulan)</p><p>📏 Panjang: ~1.2 cm/bulan</p><p>🧠 Lilitan kepala: ~0.5 cm/bulan</p></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>📊 Carta Anggaran Berat Janin</h3>
+      <div class="chart-visual" id="fetalWeightChart"></div>
+      <p style="font-size:0.8rem;color:var(--text-light);text-align:center;">Berat janin anggaran (g) pada minggu utama</p>
+    </div>
+    <div class="card">
+      <h3>📊 Carta Berat Bayi 0–12 Bulan (WHO Median)</h3>
+      <div class="chart-visual" id="babyWeightChart"></div>
+      <p style="font-size:0.8rem;color:var(--text-light);text-align:center;">Berat median (kg) lelaki & perempuan</p>
+    </div>
+  </div>
+
+  <!-- Other views (Bayi, KKM, Pantang, Senarai) same as original, with id viewBaby etc. -->
+  <div class="view-container" id="viewBaby">
+    <div class="card">
+      <h2><i class="fas fa-syringe"></i> Peringatan Vaksin Bayi</h2>
+      <p style="font-size:0.7rem;color:#b2959e;margin-bottom:0.6rem;">Dikira dari tarikh lahir. Tandakan ✅ untuk vaksin yang sudah diambil.</p>
+      <div class="timeline" id="vaccineList"></div>
+    </div>
+    <div class="card">
+      <h2><i class="fas fa-baby"></i> Keperluan Baby Di Rumah</h2>
+      <div id="babyHomeList"></div>
+    </div>
+  </div>
+  <div class="view-container" id="viewKkm">
+    <div class="card"><h2><i class="fas fa-syringe"></i> Jadual Vaksin KKM (NIP)</h2><div class="timeline" id="kkmVaccine"></div></div>
+    <div class="card"><h2><i class="fas fa-clipboard-check"></i> Pencapaian Penting</h2><div class="timeline" id="kkmMilestone"></div></div>
+  </div>
+  <div class="view-container" id="viewPantang">
+    <div class="card" style="text-align:center;border-top:5px solid var(--menu-red);"><h2 style="color:var(--menu-red);">📖 Menu & Barangan Pantang</h2></div>
+    <div class="meal-grid" id="mealGrid"></div>
+  </div>
+  <div class="view-container" id="viewLists">
+    <div class="card"><h2><i class="fas fa-suitcase-medical"></i> Beg Hospital</h2><div id="bagList"></div></div>
+    <div class="card"><h2><i class="fas fa-cart-shopping"></i> Senarai Beli-belah</h2>
+      <div class="btn-row" style="justify-content:flex-start;"><input type="text" id="newItem" class="appt-input" placeholder="Tambah item..." style="flex:2;"><button class="btn primary-btn small-btn" id="addItemBtn"><i class="fas fa-plus"></i></button></div>
+      <div id="shopList"></div>
+    </div>
+    <div class="card"><h2><i class="fas fa-mortar-pestle"></i> Resipi & Amalan Pantang</h2><div id="pantangTips"></div><h3>✅ Tabiat Pantang</h3><div id="pantangHabits"></div></div>
+    <div class="card"><h2><i class="fas fa-hand-holding-heart"></i> Urusan Uri</h2><div id="uriChecksContainer"></div></div>
+  </div>
+
+  <div class="footer-note">🌸 Manual Penjagaan Perinatal KKM & NIP 2024 · Data disimpan setempat + sandaran Google Sheet · <a href="#" id="exportPdfBtn">Cetak Laporan</a></div>
+</div>
+
+<!-- GROCERY MODAL -->
+<div id="groceryModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeModalBtn">&times;</span>
+    <h3 id="modalTitle"></h3>
+    <div id="modalBody"></div>
+    <button class="copy-btn" id="copyListBtn">📋 Salin ke WhatsApp</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  // ========== MANIFEST & SERVICE WORKER ==========
+  const manifestObj = {
+    name: "BungaTracker",
+    short_name: "BungaTracker",
+    start_url: "./index.html",
+    display: "standalone",
+    background_color: "#fbe9f1",
+    theme_color: "#b45f7a",
+    description: "Kemampaan penuh kehamilan dan pantang secara progresif",
+    icons: [
+      { src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cGF0aCBzdHJva2U9IiNiNDVmN2EiIGZpbGw9Im5vbmUiIGQ9Ik0xMDAsOTJjLTYsNy0xNyw0LTIyLTFsMTMtMTNjNSw1LDE2LDgsMjIsMXoiLz48cGF0aCBmaWxsPSIjYjQ1ZjdhIiBkPSJNMzAsODBjMC05LDYtMTcsMTUtMThsMi0yYzAsMCwwLDAtMiwyYy03LDAsMTMsNiwwLDE4LDAsMGMtNCw0LTE2LDQsMTktM2w4LDIxYzMsMTgsMTUsMjUtMjksMTRaIi8+PGNpcmNsZSBjeD0iOTYiIGN5PSI5NiIgcj0iMjRweCIgZmlsbD0iI2I0NWY3YSIgb3BhY2l0eT0iMC4zIi8+PC9zdmc+", sizes: "192x192", type: "image/svg+xml" },
+      { src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBzdHJva2U9IiNiNDVmN2EiIGZpbGw9Im5vbmUiIGQ9Ik0yNTYsMjI0Yy0xMiwxNC0zNCw4LTQ0LTJsMjYtMjZjMTAsMTAsMzIsMTYsNDQsMnoiLz48cGF0aCBmaWxsPSIjYjQ1ZjdhIiBkPSJNNjAsMTYwYzAtMTgsMTItMzQsMzAtMzZsNC00YzAsMCwwLDAtNCw0Yy0xNCwwLDI2LDEyLDAsMzYsMCwwYy04LDgtMzIsOCwzOC02bDE2LDQyYzYsMzYsMzAsNTAtNTgsMjh6Ii8+PGNpcmNsZSBjeD0iMjU2IiBjeT0iMjU2IiByPSI0OHB4IiBmaWxsPSIjYjQ1ZjdhIiBvcGFjaXR5PSIwLjMiLz48L3N2Zz4=", sizes: "512x512", type: "image/svg+xml" }
+    ]
+  };
+  const manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: 'application/json' });
+  const manifestUrl = URL.createObjectURL(manifestBlob);
+  document.getElementById('manifestLink').href = manifestUrl;
+
+  if ('serviceWorker' in navigator) {
+    const swCode = `
+      const CACHE_NAME = 'bungatracker-v3';
+      self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(['/', 'index.html'])).then(() => self.skipWaiting())));
+      self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
+      self.addEventListener('activate', e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))).then(() => self.clients.claim())));
+    `;
+    const swBlob = new Blob([swCode], { type: 'application/javascript' });
+    navigator.serviceWorker.register(URL.createObjectURL(swBlob));
+  }
+
+  // ========== CLOUD BACKUP ==========
+  const WEBAPP_URL = 'YOUR_WEBAPP_URL'; // Ganti dengan URL Apps Script anda
+  let CLIENT_ID = localStorage.getItem('bg_clientId');
+  if (!CLIENT_ID) {
+    CLIENT_ID = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+    localStorage.setItem('bg_clientId', CLIENT_ID);
+  }
+
+  async function backupToSheet(action, data) {
+    if (WEBAPP_URL === 'YOUR_WEBAPP_URL') return;
+    try {
+      await fetch(WEBAPP_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action, data, clientId: CLIENT_ID }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (e) {}
+  }
+
+  // ========== MODULES ==========
+  const Storage = {
+    get(key) { try { return JSON.parse(localStorage.getItem(key)); } catch(e) { return null; } },
+    set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
+  };
+  const DateUtils = {
+    fmt(d) { return d.toISOString().slice(0,10); },
+    today() { let t=new Date(); return new Date(t.getFullYear(),t.getMonth(),t.getDate()); },
+    daysBetween(d1,d2) { return Math.round((d2-d1)/86400000); },
+    addDays(d,n) { let r=new Date(d); r.setDate(r.getDate()+n); return r; },
+    safeDate(value, fallback) {
+      if (!value) return new Date(fallback);
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? new Date(fallback) : d;
+    }
+  };
+  const CONST = { PREG:280, POST:1000, CIRC:2*Math.PI*52, KICK_START:28, KICK_TARGET:10 };
+
+  // ========== DATA ==========
+  const MEAL_DATA = [
+    {set:'Set 1',title:'Bebola Ayam & Singgang',breakfast:'Bebola Ayam & Horlick',main:'Singgang Ikan & Sayur',snack:'Buah Potong',recipe:'Bebola: Kisar ayam, telur, bawang. Rebus.\nSinggang: Rebus ikan dgn kunyit, serai, asam keping.',grocery:['Dada Ayam','Ikan Tenggiri','Telur','Sayur Kucai','Tomato','Buah','Bawang','Kunyit & Serai','Lada Hitam','Asam Keping','Tepung Jagung','Horlick']},
+    {set:'Set 2',title:'Wrap & Ikan Kukus',breakfast:'Wrap Ayam & Horlick',main:'Ikan Kukus Lada Hitam',snack:'Biskut & Milo',recipe:'Wrap: Grill ayam perap.\nKukus: Lumur ikan halia & lada hitam, kukus 15m.',grocery:['Dada Ayam','Ikan Tenggiri','Wrap','Sayur Campur','Lemon','Bawang','Halia','Lada Hitam','Milo','Biskut']},
+    {set:'Set 3',title:'Lempeng Oat & Sup Ikan',breakfast:'Lempeng Oat Kurma',main:'Sup Ikan Merah',snack:'Jejari Kentang',recipe:'Lempeng: Pan-fry oat, kurma, susu.\nSup: Didihkan bunjut, masukkan ikan.',grocery:['Ikan Merah','Isi Ayam','Kentang','Brokoli','Daun Sup','Oat','Kurma','Susu Segar','Sup Bunjut']},
+    {set:'Set 4',title:'Bihun & Ikan Goreng AF',breakfast:'Bihun Goreng Lada Hitam',main:'Ikan Goreng AF & Sayur',snack:'Cucur Bilis',recipe:'Bihun: Tumis ringkas.\nIkan AF: Perap kunyit, bakar 180C 20min.',grocery:['Ikan','Isi Ayam','Ikan Bilis','Bihun','Sawi','Tepung Gandum','Kunyit','Lada Hitam']},
+    {set:'Set 5',title:'Nasi Goreng & Kari Ikan',breakfast:'Nasi Goreng Pegaga',main:'Kari Ikan Tanpa Santan',snack:'Oatmeal Buah',recipe:'Nasi: Masukkan pegaga.\nKari: Guna asam jawa ganti santan.',grocery:['Ikan Tenggiri','Isi Ayam','Pegaga','Buah','Oat','Susu','Rempah Kari','Asam Jawa']},
+    {set:'Set 6',title:'Singgang Ikan Selar',breakfast:'Biskut & Kurma',main:'Singgang Ikan Selar',snack:'Buah Potong',recipe:'Singgang: Didihkan air, asam, serai, bawang & ikan.',grocery:['Ikan Selar','Sayur','Buah','Biskut','Kurma','Horlick','Bawang','Asam Keping','Serai']}
+  ];
+  const BABY_HOME_CATS = [
+    {catId:'feeding',icon:'🍼',title:'1. Penyusuan',items:[{id:'fe1',name:'Pencuci Botol & Berus',note:'Span khas'},{id:'fe2',name:'Sterilizer/Periuk Khas',note:'Rebus botol'},{id:'fe3',name:'Botol Susu 4oz (2-3)',note:'Saiz newborn'},{id:'fe4',name:'Susu Formula Newborn (tin kecil)',note:'Backup'}]},
+    {catId:'bath',icon:'🛁',title:'2. Mandi & Kebersihan',items:[{id:'ba1',name:'Minyak Telon / Yu Yee',note:'Sapu perut'},{id:'ba2',name:'Kapas Muka',note:'Cuci gusi'},{id:'ba3',name:'Putik Kapas Besar',note:'Telinga luar'},{id:'ba4',name:'Sabun & Syampu Tear-free',note:''},{id:'ba5',name:'Tuala Hooded (2-3)',note:'Penutup kepala'},{id:'ba6',name:'Besen Mandi Baby',note:'Dengan sokongan'},{id:'ba7',name:'Lotion',note:''},{id:'ba8',name:'Body wash',note:''}]},
+    {catId:'diaper',icon:'🚼',title:'3. Lampin',items:[{id:'di1',name:'Lampin NB (1-2 pek)',note:'Jangan stok banyak'},{id:'di2',name:'Lampin Kain (1-2 dozen)',note:'Lapik tidur'},{id:'di3',name:'Krim Ruam',note:'Prevention'},{id:'di4',name:'Alas Tukar Waterproof',note:''},{id:'di5',name:'Baby Wipes Sensitive',note:'Stok banyak'}]},
+    {catId:'cloth',icon:'👕',title:'4. Pakaian Harian',items:[{id:'cl1',name:'Napkin Burp (12+)',note:'Lap susu'},{id:'cl2',name:'Barut Ikatan',note:'Bukan Velcro'},{id:'cl3',name:'Sarung Tangan/Kaki (10-15)',note:'Bundle murah'},{id:'cl4',name:'Jumpsuit/Sleepsuit (10-15)',note:'Praktikal'}]},
+    {catId:'sleep',icon:'🛏️',title:'5. Tidur',items:[{id:'sl1',name:'Katil/Buaian/Playpen',note:''},{id:'sl2',name:'Tilam & Alas Waterproof',note:'Lapis 2 set'},{id:'sl3',name:'Bantal Kecil/Kekabu',note:'Ganjal sisi'},{id:'sl4',name:'Storage bag',note:''}]},
+    {catId:'health',icon:'🏥',title:'6. Kesihatan',items:[{id:'he1',name:'Minyak Herba',note:'Telon/Kayu Putih'},{id:'he2',name:'Nasal Aspirator',note:'Pencungkil hingus'},{id:'he3',name:'Gunting Kuku Bayi',note:'Khas'},{id:'he4',name:'Termometer Digital',note:'Ketiak'},{id:'he5',name:'Rash cream',note:''}]},
+    {catId:'travel',icon:'🚗',title:'7. Keluar Rumah',items:[{id:'tr1',name:'Diaper Bag',note:'Besar'},{id:'tr2',name:'Stroller/Carrier',note:'Sling'}]}
+  ];
+  const VACCINE_SCHEDULE = [
+    {ageDays:0,label:'Lahir',vaccines:'BCG · HepB dos1'},{ageDays:30,label:'1 bulan',vaccines:'HepB dos2'},
+    {ageDays:60,label:'2 bulan',vaccines:'6-dlm-1 · PCV · Rotavirus'},{ageDays:90,label:'3 bulan',vaccines:'6-dlm-1 dos2'},
+    {ageDays:120,label:'4 bulan',vaccines:'PCV · Rotavirus dos2'},{ageDays:150,label:'5 bulan',vaccines:'6-dlm-1 dos3'},
+    {ageDays:180,label:'6 bulan',vaccines:'PCV dos3'},{ageDays:270,label:'9 bulan',vaccines:'MMR dos1'},
+    {ageDays:365,label:'12 bulan',vaccines:'MMR dos2'},{ageDays:540,label:'18 bulan',vaccines:'6-dlm-1 penggalak'}
+  ];
+  const PANTANG_TIPS = [
+    {title:'1. Ikan Bakar Kunyit & Halia',text:'Fungsi: Membuang angin & mengecutkan rahim. Bahan: Ikan Selar/Tenggiri, Kunyit hidup, Halia, Lada hitam. Cara: Tumbuk bahan, lumur ikan, bakar tanpa minyak / air fryer.'},
+    {title:'2. Sup Ayam Halia & Lada Hitam',text:'Fungsi: Menambah tenaga & memanaskan badan. Bahan: Ayam (buang kulit), Bawang putih, Halia, Kayu manis, Lada hitam tumbuk. Cara: Rebus semua bahan hingga ayam lembut.'},
+    {title:'3. Sayur Sawi Bening',text:'Fungsi: Melawaskan penghadaman. Bahan: Sawi, Bawang putih, Ikan bilis. Cara: Tumis bawang & bilis dengan sedikit air.'},
+    {title:'💡 Tip Untuk Ayah',text:'Tungku: Panaskan batu tungku – bantu kecutkan rahim. Elak "Sejuk": Tiada timun, tembikai, air kelapa. Bengkung: Bantu isteri pakai bengkung. Halia & Lada Hitam: Kawan baik buang angin.'}
+  ];
+
+  // ========== GLOBAL STATE ==========
+  let currentEDD = null;
+  let currentBirthDate = null;
+  let _groceryText = '';
+  let _bfTimerInterval = null;
+  let _ctTimerInterval = null;
+
+  // ========== DASHBOARD RENDER ==========
+  function renderCountdown() {
+    const card = document.getElementById('countdownCard');
+    if (!currentEDD || isNaN(currentEDD.getTime())) { card.innerHTML = '<p style="color:#999;">Sila masukkan LMP atau EDD</p>'; return; }
+    const today = DateUtils.today(); const due = new Date(currentEDD); due.setHours(0,0,0,0);
+    const diffDays = DateUtils.daysBetween(today, due);
+    const gestDays = CONST.PREG - diffDays;
+    const gestWeeks = Math.floor(gestDays/7);
+    const hasBirth = currentBirthDate && !isNaN(currentBirthDate.getTime());
+    let heading='', sub='', trimester='', trClass='';
+    if (hasBirth) {
+      const birth = new Date(currentBirthDate); birth.setHours(0,0,0,0);
+      const postDays = DateUtils.daysBetween(birth, today);
+      heading = `${Math.max(0, postDays)}`;
+      sub = 'hari selepas bersalin'; trimester='Postpartum'; trClass='trimester-3';
+    } else if (diffDays > 0) {
+      heading = `${diffDays}`;
+      sub = 'hari lagi sehingga due';
+      if (gestWeeks < 14) { trimester = 'Trimester Pertama (0-13 minggu)'; trClass = 'trimester-1'; }
+      else if (gestWeeks < 28) { trimester = 'Trimester Kedua (14-27 minggu)'; trClass = 'trimester-2'; }
+      else { trimester = 'Trimester Ketiga (28-40 minggu)'; trClass = 'trimester-3'; }
+    } else {
+      heading = `${Math.abs(diffDays)}`;
+      sub = 'hari melepasi due';
+      trimester = 'Lewat – Trimester Ketiga'; trClass = 'trimester-3';
+    }
+    card.innerHTML = `<div class="countdown-number">${heading}</div><div class="countdown-label">${sub}</div><span class="trimester-badge ${trClass}">${trimester}</span>`;
+  }
+
+  function renderProgressRings() {
+    if (!currentEDD || isNaN(currentEDD.getTime())) return;
+    const today = DateUtils.today(); const due = new Date(currentEDD); due.setHours(0,0,0,0);
+    const diff = DateUtils.daysBetween(today, due);
+    let pregDays = CONST.PREG - diff; if (pregDays<0) pregDays=0; if (pregDays>CONST.PREG) pregDays=CONST.PREG;
+    const pregWeeks = Math.floor(pregDays/7), pregRem=pregDays%7;
+    let postDays = 0;
+    if (currentBirthDate && !isNaN(currentBirthDate.getTime())) {
+      const birth = new Date(currentBirthDate); birth.setHours(0,0,0,0);
+      postDays = DateUtils.daysBetween(birth, today);
+      if (postDays<0) postDays=0; if (postDays>CONST.POST) postDays=CONST.POST;
+    }
+    const pregOffset = CONST.CIRC - (pregDays/CONST.PREG)*CONST.CIRC;
+    const postOffset = CONST.CIRC - (postDays/CONST.POST)*CONST.CIRC;
+    document.getElementById('progressRings').innerHTML = `
+      <div class="progress-card">
+        <div class="ring-container"><svg class="ring" viewBox="0 0 120 120"><circle class="bg-circle" cx="60" cy="60" r="52"/><circle class="progress-circle" cx="60" cy="60" r="52" stroke-dasharray="326.73" stroke-dashoffset="${pregOffset}"/></svg><div class="ring-text"><span class="days">${pregDays}</span><span class="label">hari hamil</span></div></div>
+        <span class="week-badge">Minggu ${pregWeeks}+${pregRem}</span><span style="font-size:0.7rem;">🤰</span>
+      </div>
+      <div class="progress-card">
+        <div class="ring-container"><svg class="ring" viewBox="0 0 120 120"><circle class="bg-circle" cx="60" cy="60" r="52"/><circle class="progress-circle postpartum-circle" cx="60" cy="60" r="52" stroke-dasharray="326.73" stroke-dashoffset="${postOffset}"/></svg><div class="ring-text"><span class="days">${postDays}</span><span class="label">hari pantang</span></div></div>
+        <span class="week-badge">Hari ${postDays}</span><span style="font-size:0.7rem;">👶</span>
+      </div>`;
+  }
+
+  function renderKickCounter() {
+    const wrapper = document.getElementById('kickWrapper');
+    if (!currentEDD || isNaN(currentEDD.getTime())) { wrapper.style.display='none'; return; }
+    const today = DateUtils.today(); const due = new Date(currentEDD); due.setHours(0,0,0,0);
+    const gestDays = CONST.PREG - DateUtils.daysBetween(today, due);
+    const gestWeeks = Math.floor(gestDays/7);
+    if (gestWeeks < CONST.KICK_START || gestDays <= 0 || DateUtils.daysBetween(today, due) < 0) { wrapper.style.display='none'; return; }
+    wrapper.style.display='block';
+    const kickData = Storage.get('kickData') || {};
+    const todayStr = DateUtils.fmt(today);
+    const count = kickData[todayStr]?.count || 0;
+    wrapper.innerHTML = `<div class="kick-section"><div class="kick-header"><div><span class="kick-count" id="kickCount">${count}</span><span class="kick-target"> / 10 hari ini</span></div><div style="display:flex;gap:0.4rem;align-items:center;"><button class="kick-btn-secondary" id="kickMinusBtn" ${count===0?'disabled':''}>−</button><button class="kick-btn" id="kickBtn" ${count>=CONST.KICK_TARGET?'disabled':''}>+</button></div></div><div class="calendar" id="kickCal"></div><p style="font-size:0.65rem;text-align:center;margin-top:0.5rem;">🌸 KKM: Catat pergerakan janin setiap hari mulai 28 minggu</p></div>`;
+    renderKickCalendar();
+    document.getElementById('kickBtn').addEventListener('click', ()=>{
+      let data = Storage.get('kickData')||{};
+      let entry = data[todayStr]||{count:0};
+      if(entry.count < CONST.KICK_TARGET) {
+        entry.count++; data[todayStr]=entry; Storage.set('kickData',data);
+        document.getElementById('kickCount').textContent = entry.count;
+        document.getElementById('kickBtn').disabled = entry.count >= CONST.KICK_TARGET;
+        document.getElementById('kickMinusBtn').disabled = entry.count === 0;
+        renderKickCalendar();
+        backupToSheet('saveKick', { date: todayStr, count: entry.count });
+      }
+    });
+    document.getElementById('kickMinusBtn').addEventListener('click', ()=>{
+      let data = Storage.get('kickData')||{};
+      let entry = data[todayStr]||{count:0};
+      if(entry.count > 0) {
+        entry.count--; data[todayStr]=entry; Storage.set('kickData',data);
+        document.getElementById('kickCount').textContent = entry.count;
+        document.getElementById('kickBtn').disabled = entry.count >= CONST.KICK_TARGET;
+        document.getElementById('kickMinusBtn').disabled = entry.count === 0;
+        renderKickCalendar();
+        backupToSheet('saveKick', { date: todayStr, count: entry.count });
+      }
+    });
+  }
+
+  function renderKickCalendar() {
+    const calDiv = document.getElementById('kickCal'); if(!calDiv) return;
+    const today = DateUtils.today(); const year = today.getFullYear(), month = today.getMonth();
+    const firstDay = new Date(year,month,1).getDay(); const daysInMonth = new Date(year,month+1,0).getDate();
+    const months = ["Jan","Feb","Mac","Apr","Mei","Jun","Jul","Ogos","Sep","Okt","Nov","Dis"];
+    let html = `<div class="cal-nav"><span>${months[month]} ${year}</span></div><div class="cal-grid">`;
+    ['Ahd','Isn','Sel','Rab','Kha','Jum','Sab'].forEach(d=>html+=`<div class="cal-day-name">${d}</div>`);
+    for(let i=0;i<firstDay;i++) html+='<div class="cal-cell"></div>';
+    const kickStart = DateUtils.addDays(currentEDD, -(40-CONST.KICK_START)*7);
+    const kickData = Storage.get('kickData')||{};
+    const todayStr = DateUtils.fmt(today), dueStr = DateUtils.fmt(currentEDD);
+    for(let d=1; d<=daysInMonth; d++){
+      const date = new Date(year,month,d);
+      const ds = DateUtils.fmt(date);
+      const isToday = ds===todayStr;
+      const inRange = date>=kickStart && ds<=dueStr;
+      let dot='';
+      if(inRange){
+        const entry = kickData[ds];
+        if(entry && entry.count===CONST.KICK_TARGET) dot='complete';
+        else if(entry && entry.count>0) dot='partial';
+        else dot='missed';
+      }
+      html+=`<div class="cal-cell${isToday?' today':''}">${d}${inRange?`<span class="kick-dot ${dot}"></span>`:''}</div>`;
+    }
+    html+='</div>'; calDiv.innerHTML = html;
+  }
+
+  function renderContractionTimer() {
+    const wrapper = document.getElementById('contractionWrapper');
+    wrapper.innerHTML = `<div class="contraction-section"><h2><i class="fas fa-stopwatch"></i> Pemasa Kontraksi</h2><div class="timer-display" id="contractionDisplay">00:00</div><div style="display:flex;gap:0.5rem;justify-content:center;margin:0.8rem 0;"><button class="btn primary-btn" id="ctStartBtn">Mula</button><button class="btn" id="ctStopBtn" disabled>Henti</button><button class="btn" id="ctResetBtn">Reset</button></div><div class="log-list" id="contractionLog"></div></div>`;
+    renderContractionLog();
+    let ctStart = null;
+    document.getElementById('ctStartBtn').addEventListener('click', ()=>{
+      ctStart = Date.now();
+      document.getElementById('ctStopBtn').disabled = false;
+      document.getElementById('ctStartBtn').disabled = true;
+      if(_ctTimerInterval) clearInterval(_ctTimerInterval);
+      _ctTimerInterval = setInterval(()=>{
+        const sec = Math.floor((Date.now()-ctStart)/1000);
+        document.getElementById('contractionDisplay').textContent = `${Math.floor(sec/60).toString().padStart(2,'0')}:${(sec%60).toString().padStart(2,'0')}`;
+      },200);
+    });
+    document.getElementById('ctStopBtn').addEventListener('click', ()=>{
+      if(_ctTimerInterval) clearInterval(_ctTimerInterval);
+      const duration = Math.floor((Date.now()-ctStart)/1000);
+      const logs = Storage.get('contractionLog')||[];
+      logs.push({start:new Date(ctStart).toISOString(), duration});
+      Storage.set('contractionLog',logs);
+      backupToSheet('saveContraction', { start: new Date(ctStart).toISOString(), duration });
+      document.getElementById('ctStopBtn').disabled = true;
+      document.getElementById('ctStartBtn').disabled = false;
+      document.getElementById('contractionDisplay').textContent = '00:00';
+      renderContractionLog();
+    });
+    document.getElementById('ctResetBtn').addEventListener('click', ()=>{
+      Storage.set('contractionLog',[]); renderContractionLog();
+    });
+  }
+
+  function renderContractionLog() {
+    const logs = Storage.get('contractionLog')||[];
+    let html='';
+    [...logs].reverse().forEach((l,i,arr)=>{
+      const time = new Date(l.start).toLocaleTimeString('ms',{hour:'2-digit',minute:'2-digit'});
+      const dur = `${Math.floor(l.duration/60)}m ${l.duration%60}s`;
+      let interval='';
+      if(i<arr.length-1){
+        const gap = Math.round((new Date(arr[i+1].start)-new Date(l.start))/1000);
+        interval = ` · Sela: ${Math.floor(gap/60)}m ${gap%60}s`;
+      }
+      html += `<div class="log-item"><span>${time}</span><span>${dur}${interval}</span></div>`;
+    });
+    document.getElementById('contractionLog').innerHTML = html || '<p style="font-size:0.7rem;">Tiada rekod</p>';
+  }
+
+  function renderBreastfeedingTracker() {
+    const wrapper = document.getElementById('breastfeedingWrapper');
+    if(!currentBirthDate || isNaN(currentBirthDate.getTime())) { wrapper.style.display='none'; return; }
+    wrapper.style.display='block';
+    const logs = Storage.get('breastfeedingLog')||[];
+    const lastLog = logs.length>0 ? logs[logs.length-1] : null;
+    const suggestedSide = lastLog ? (lastLog.side==='left'?'right':'left') : 'left';
+    wrapper.innerHTML = `<div class="breastfeeding-section"><h2><i class="fas fa-breast"></i> Penyusuan</h2>${lastLog ? `<div class="side-suggestion"><i class="fas fa-lightbulb"></i> Sesi lepas: <strong>${lastLog.side==='left'?'Kiri':'Kanan'}</strong> → Cuba mula dengan <strong>${suggestedSide==='left'?'Kiri':'Kanan'}</strong></div>` : ''}<div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.8rem;"><select id="bfSide" class="appt-input" style="flex:1;"><option value="left" ${suggestedSide==='left'?'selected':''}>Kiri</option><option value="right" ${suggestedSide==='right'?'selected':''}>Kanan</option></select><button class="btn primary-btn small-btn" id="bfStartBtn">Mula</button><button class="btn small-btn" id="bfStopBtn" disabled>Henti</button><span id="bfTimerDisplay" style="font-weight:700;color:var(--primary);align-self:center;">00:00</span></div><button class="btn small-btn" id="bfSaveBtn" disabled>Simpan Sesi</button><div class="log-list" style="margin-top:0.8rem;" id="bfLogList"></div></div>`;
+    renderBfLogList();
+    let bfStart=null;
+    document.getElementById('bfStartBtn').addEventListener('click', ()=>{
+      bfStart = Date.now();
+      document.getElementById('bfStopBtn').disabled = false;
+      document.getElementById('bfSaveBtn').disabled = true;
+      document.getElementById('bfStartBtn').disabled = true;
+      if(_bfTimerInterval) clearInterval(_bfTimerInterval);
+      _bfTimerInterval = setInterval(()=>{
+        const sec = Math.floor((Date.now()-bfStart)/1000);
+        document.getElementById('bfTimerDisplay').textContent = `${Math.floor(sec/60).toString().padStart(2,'0')}:${(sec%60).toString().padStart(2,'0')}`;
+      },200);
+    });
+    document.getElementById('bfStopBtn').addEventListener('click', ()=>{
+      if(_bfTimerInterval) clearInterval(_bfTimerInterval);
+      document.getElementById('bfStopBtn').disabled = true;
+      document.getElementById('bfStartBtn').disabled = false;
+      document.getElementById('bfSaveBtn').disabled = false;
+    });
+    document.getElementById('bfSaveBtn').addEventListener('click', ()=>{
+      const side = document.getElementById('bfSide').value;
+      const duration = Math.floor((Date.now()-bfStart)/1000);
+      const logs = Storage.get('breastfeedingLog')||[];
+      logs.push({side, start:new Date(bfStart).toISOString(), duration});
+      Storage.set('breastfeedingLog',logs);
+      backupToSheet('saveBreastfeeding', { side, start: new Date(bfStart).toISOString(), duration });
+      renderBreastfeedingTracker();
+    });
+  }
+
+  function renderBfLogList() {
+    const logs = Storage.get('breastfeedingLog')||[];
+    let html='';
+    [...logs].slice(-10).reverse().forEach(l=>{
+      const time = new Date(l.start).toLocaleTimeString('ms',{hour:'2-digit',minute:'2-digit'});
+      html += `<div class="log-item"><span>${l.side==='left'?'🔵 Kiri':'🔴 Kanan'} · ${time}</span><span>${Math.floor(l.duration/60)}m ${l.duration%60}s</span></div>`;
+    });
+    document.getElementById('bfLogList').innerHTML = html || '<p style="font-size:0.7rem;">Tiada rekod</p>';
+  }
+
+  function renderAppointments() {
+    const appts = Storage.get('appointments')||[];
+    const container = document.getElementById('apptCard');
+    let html = '<h2><i class="fas fa-calendar-check"></i> Temujanji Akan Datang</h2><div class="appt-form">';
+    html += '<input type="date" id="apptDate" class="appt-input"><input type="time" id="apptTime" class="appt-input">';
+    html += '<input type="text" id="apptNote" class="appt-input" placeholder="Nota"><button class="btn primary-btn small-btn" id="addApptBtn">+</button></div><ul class="appt-list">';
+    const now = DateUtils.today();
+    const upcoming = appts.filter(a=>new Date(a.date+'T00:00:00')>=now).sort((a,b)=>new Date(a.date)-new Date(b.date));
+    upcoming.forEach(a=>{
+      const d = new Date(a.date);
+      html += `<li class="appt-item"><span><i class="far fa-calendar"></i> ${d.toLocaleDateString('ms')} ${a.time||''} – ${a.note||''}</span><button class="delete-btn" data-id="${a.id}"><i class="fas fa-trash"></i></button></li>`;
+    });
+    html += '</ul>'; container.innerHTML = html;
+    document.getElementById('addApptBtn').addEventListener('click', ()=>{
+      const date = document.getElementById('apptDate').value;
+      if(!date) return;
+      const appts = Storage.get('appointments')||[];
+      appts.push({id:Date.now(), date, time:document.getElementById('apptTime').value, note:document.getElementById('apptNote').value.trim()||'Temujanji'});
+      Storage.set('appointments',appts);
+      backupToSheet('saveAppointment', { date, time: document.getElementById('apptTime').value, note: document.getElementById('apptNote').value.trim()||'Temujanji' });
+      renderAppointments();
+    });
+    container.querySelectorAll('.delete-btn').forEach(b=>b.addEventListener('click', ()=>{
+      let appts = Storage.get('appointments')||[];
+      appts = appts.filter(a=>a.id!=b.dataset.id);
+      Storage.set('appointments',appts);
+      renderAppointments();
+    }));
+  }
+
+  function renderVaccineReminder() {
+    const container = document.getElementById('vaccineList');
+    if(!currentBirthDate || isNaN(currentBirthDate.getTime())) { container.innerHTML = '<p style="color:#999;">Masukkan tarikh lahir bayi di Dashboard.</p>'; return; }
+    const today = DateUtils.today();
+    const vaxCompleted = Storage.get('vaxCompleted')||{};
+    let html='';
+    VACCINE_SCHEDULE.forEach(v=>{
+      const dueDate = DateUtils.addDays(currentBirthDate, v.ageDays);
+      const diff = DateUtils.daysBetween(today, dueDate);
+      const isCompleted = vaxCompleted[v.ageDays]||false;
+      let statusHtml = '';
+      if(isCompleted) statusHtml = '<span class="status-badge completed">✅ Selesai</span>';
+      else if(diff<=14 && diff>=0) statusHtml = '<span class="status-badge upcoming">🔔 Akan datang</span>';
+      html += `<div class="timeline-item"><span class="dot"></span><div style="flex:1;"><strong>${v.label}</strong> <span style="font-size:0.7rem;">(${dueDate.toLocaleDateString('ms',{day:'numeric',month:'short'})})</span> <span class="vaccine-tag">${v.vaccines}</span> ${statusHtml}<label style="font-size:0.68rem;display:block;margin-top:0.2rem;"><input type="checkbox" class="vax-check" data-age="${v.ageDays}" ${isCompleted?'checked':''}> Selesai</label></div></div>`;
+    });
+    container.innerHTML = html;
+  }
+
+  function renderShopList() { /* ... unchanged ... */ }
+  function renderBagList() { /* ... unchanged ... */ }
+  function renderBabyHomeList() { /* ... unchanged ... */ }
+  function renderPantangTips() { /* ... unchanged ... */ }
+  function renderPantangHabits() { /* ... unchanged ... */ }
+  function renderUriChecks() { /* ... unchanged ... */ }
+  function renderMealGrid() { /* ... unchanged ... */ }
+
+  // ========== GROWTH TAB ==========
+  const fetalData = [
+    {week:4,crl:'0.2–0.4 cm',weight:'< 0.001 kg',size:'Biji popi',emoji:'🌱',dev:'Implantasi; tiub neural terbentuk'},
+    {week:5,crl:'0.4–0.6 cm',weight:'< 0.001 kg',size:'Bijan',emoji:'🌰',dev:'Jantung mula berdegup'},
+    {week:6,crl:'0.6–0.8 cm',weight:'< 0.001 kg',size:'Lentil',emoji:'🫘',dev:'Otak & ciri wajah terbentuk'},
+    {week:7,crl:'0.9–1.3 cm',weight:'< 0.001 kg',size:'Blueberi',emoji:'🫐',dev:'Tunas lengan/kaki muncul'},
+    {week:8,crl:'1.4–2.0 cm',weight:'~0.001 kg',size:'Raspberi',emoji:'🍇',dev:'Semua organ utama terbentuk'},
+    {week:9,crl:'2.1–2.8 cm',weight:'~0.002 kg',size:'Ceri',emoji:'🍒',dev:'Jari tangan & kaki terbentuk'},
+    {week:10,crl:'2.9–3.8 cm',weight:'~0.004 kg',size:'Prun',emoji:'🟤',dev:'Rawan & tulang terbentuk'},
+    {week:11,crl:'3.9–4.8 cm',weight:'~0.007 kg',size:'Limau nipis',emoji:'🍋',dev:'Pergerakan janin bermula'},
+    {week:12,crl:'4.9–6.0 cm',weight:'~0.014 kg',size:'Plum',emoji:'🟣',dev:'Refleks berkembang; ginjal berfungsi'},
+    {week:13,crl:'6.1–7.3 cm',weight:'~0.023 kg',size:'Lemon',emoji:'🍋',dev:'Cap jari terbentuk'},
+    {week:14,crl:'7.4–8.7 cm',weight:'~0.043 kg',size:'Pic',emoji:'🍑',dev:'Ekspresi wajah muncul'},
+    {week:15,crl:'8.8–10.2 cm',weight:'~0.070 kg',size:'Epal',emoji:'🍎',dev:'Refleks menghisap berkembang'},
+    {week:16,crl:'10.3–11.8 cm',weight:'~0.100 kg',size:'Avokado',emoji:'🥑',dev:'Rambut & kuku tumbuh'},
+    {week:17,crl:'11.9–13.5 cm',weight:'~0.140 kg',size:'Pear',emoji:'🍐',dev:'Simpanan lemak bermula'},
+    {week:18,crl:'13.6–15.2 cm',weight:'~0.190 kg',size:'Lada benggala',emoji:'🫑',dev:'Pendengaran berkembang'},
+    {week:19,crl:'15.3–17.0 cm',weight:'~0.240 kg',size:'Mangga',emoji:'🥭',dev:'Verniks meliputi kulit'},
+    {week:20,crl:'17.1–18.8 cm',weight:'~0.300 kg',size:'Pisang',emoji:'🍌',dev:'Menelan cecair amnion'},
+    {week:21,crl:'18.9–20.6 cm',weight:'~0.360 kg',size:'Lobak',emoji:'🥕',dev:'Sumsum tulang hasil darah'},
+    {week:22,crl:'20.7–22.4 cm',weight:'~0.430 kg',size:'Betik kecil',emoji:'🟠',dev:'Kening & bulu mata kelihatan'},
+    {week:23,crl:'22.5–24.2 cm',weight:'~0.500 kg',size:'Limau gedang',emoji:'🍊',dev:'Otak berkembang pesat'},
+    {week:24,crl:'24.3–26.0 cm',weight:'~0.600 kg',size:'Kelapa',emoji:'🥥',dev:'Paru-paru hasil surfaktan'},
+    {week:25,crl:'26.1–27.8 cm',weight:'~0.700 kg',size:'Kobis bunga',emoji:'🥬',dev:'Lubang hidung terbuka'},
+    {week:26,crl:'27.9–29.6 cm',weight:'~0.820 kg',size:'Kucai besar',emoji:'🥬',dev:'Mata mungkin terbuka'},
+    {week:27,crl:'29.7–31.4 cm',weight:'~0.950 kg',size:'Brokoli',emoji:'🥦',dev:'Kitar tidur-jaga'},
+    {week:28,crl:'31.5–33.2 cm',weight:'~1.10 kg',size:'Terung',emoji:'🍆',dev:'Paru-paru mampu bernafas'},
+    {week:29,crl:'33.3–35.0 cm',weight:'~1.25 kg',size:'Labu',emoji:'🎃',dev:'SSP matang dengan cepat'},
+    {week:30,crl:'35.1–36.8 cm',weight:'~1.40 kg',size:'Kobis',emoji:'🥬',dev:'Pengawalan suhu bermula'},
+    {week:31,crl:'36.9–38.5 cm',weight:'~1.60 kg',size:'Kelapa besar',emoji:'🥥',dev:'Kesemua 5 deria berfungsi'},
+    {week:32,crl:'38.6–40.2 cm',weight:'~1.80 kg',size:'Sengkuang',emoji:'🟤',dev:'Kulit menjadi licin'},
+    {week:33,crl:'40.3–41.9 cm',weight:'~2.00 kg',size:'Nanas',emoji:'🍍',dev:'Sistem imun mengukuh'},
+    {week:34,crl:'42.0–43.5 cm',weight:'~2.20 kg',size:'Tembikai susu',emoji:'🍈',dev:'Paru-paru hampir matang'},
+    {week:35,crl:'43.6–45.1 cm',weight:'~2.45 kg',size:'Tembikai madu',emoji:'🍈',dev:'Fasa kenaikan berat pantas'},
+    {week:36,crl:'45.2–46.7 cm',weight:'~2.70 kg',size:'Salad Romaine',emoji:'🥬',dev:'Kepala mungkin turun'},
+    {week:37,crl:'46.8–48.2 cm',weight:'~2.95 kg',size:'Chard',emoji:'🥬',dev:'Cukup bulan — sedia lahir'},
+    {week:38,crl:'48.3–49.7 cm',weight:'~3.15 kg',size:'Daun bawang',emoji:'🫒',dev:'Cukup bulan'},
+    {week:39,crl:'49.8–51.0 cm',weight:'~3.30 kg',size:'Tembikai mini',emoji:'🍉',dev:'Berat lahir optimum'},
+    {week:40,crl:'50–53 cm',weight:'~3.40–3.60 kg',size:'Labu kecil',emoji:'🎃',dev:'Sedia bertemu dunia!'}
+  ];
+  const postnatalData = [
+    {month:0,wtM:3.3,wtF:3.2,lenM:49.9,lenF:49.1,hcM:34.5,hcF:33.9},
+    {month:1,wtM:4.5,wtF:4.2,lenM:54.7,lenF:53.7,hcM:37.3,hcF:36.5},
+    {month:2,wtM:5.6,wtF:5.1,lenM:58.4,lenF:57.1,hcM:39.1,hcF:38.3},
+    {month:3,wtM:6.4,wtF:5.8,lenM:61.4,lenF:59.8,hcM:40.5,hcF:39.5},
+    {month:4,wtM:7.0,wtF:6.4,lenM:63.9,lenF:62.1,hcM:41.6,hcF:40.6},
+    {month:5,wtM:7.5,wtF:6.9,lenM:65.9,lenF:64.0,hcM:42.6,hcF:41.5},
+    {month:6,wtM:7.9,wtF:7.3,lenM:67.6,lenF:65.7,hcM:43.3,hcF:42.2},
+    {month:7,wtM:8.3,wtF:7.6,lenM:69.2,lenF:67.3,hcM:44.0,hcF:42.8},
+    {month:8,wtM:8.6,wtF:7.9,lenM:70.6,lenF:68.7,hcM:44.5,hcF:43.4},
+    {month:9,wtM:8.9,wtF:8.2,lenM:72.0,lenF:70.1,hcM:45.0,hcF:43.8},
+    {month:10,wtM:9.2,wtF:8.5,lenM:73.3,lenF:71.5,hcM:45.4,hcF:44.2},
+    {month:11,wtM:9.4,wtF:8.7,lenM:74.5,lenF:72.8,hcM:45.8,hcF:44.6},
+    {month:12,wtM:9.6,wtF:8.9,lenM:75.7,lenF:74.0,hcM:46.1,hcF:44.9}
+  ];
+
+  let growthWeek = 12;
+  function renderGrowthView() {
+    const slider = document.getElementById('growthWeekSlider');
+    if(slider) slider.value = growthWeek;
+    document.getElementById('growthWeekDisplay').textContent = `Minggu ${growthWeek}`;
+    renderFetalInfo();
+    populateFetalTable();
+    highlightTableRow();
+    renderFetalWeightChart();
+    renderBabyWeightChart();
+    populatePostnatalTable();
+  }
+
+  function changeGrowthWeek(delta) {
+    growthWeek = Math.min(40, Math.max(4, growthWeek + delta));
+    document.getElementById('growthWeekSlider').value = growthWeek;
+    document.getElementById('growthWeekDisplay').textContent = `Minggu ${growthWeek}`;
+    renderFetalInfo();
+    highlightTableRow();
+  }
+
+  function getFetalByWeek(week) {
+    return fetalData.find(d => d.week === week) || fetalData[fetalData.length-1];
+  }
+
+  function renderFetalInfo() {
+    const data = getFetalByWeek(growthWeek);
+    const progress = Math.round((growthWeek/40)*100);
+    const trimester = growthWeek <= 13 ? 'Trimester 1' : growthWeek <= 26 ? 'Trimester 2' : 'Trimester 3';
+    document.getElementById('growthFetalInfo').innerHTML = `
+      <div class="stats-row">
+        <div class="stat-card"><span class="stat-value">${data.emoji}</span><div class="stat-label">Saiz: ${data.size}</div></div>
+        <div class="stat-card"><span class="stat-value">${data.weight}</span><div class="stat-label">Anggaran Berat</div></div>
+        <div class="stat-card"><span class="stat-value">${data.crl}</span><div class="stat-label">Panjang (CRL)</div></div>
+        <div class="stat-card"><span class="stat-value">${trimester}</span><div class="stat-label">${progress}% kehamilan</div></div>
+      </div>
+      <div class="progress-container">
+        <div class="progress-label"><span>Kemajuan Kehamilan</span><span>${progress}%</span></div>
+        <div class="progress-bar"><div class="progress-fill pink" style="width:${progress}%;"></div></div>
+      </div>
+      <p style="margin-top:8px;"><strong>🔬 Perkembangan Utama:</strong> ${data.dev}</p>`;
+  }
+
+  function populateFetalTable() {
+    const tbody = document.querySelector('#fetalTable tbody');
+    if(!tbody) return;
+    tbody.innerHTML = fetalData.map(d => `<tr data-week="${d.week}"><td><strong>${d.week}</strong></td><td>${d.crl}</td><td>${d.weight}</td><td>${d.emoji} ${d.size}</td><td>${d.dev}</td></tr>`).join('');
+  }
+
+  function highlightTableRow() {
+    const rows = document.querySelectorAll('#fetalTable tbody tr');
+    rows.forEach(r => { r.style.background=''; r.style.fontWeight=''; });
+    const row = document.querySelector(`#fetalTable tbody tr[data-week="${growthWeek}"]`);
+    if(row) { row.style.background='#fff5f8'; row.style.fontWeight='600'; row.scrollIntoView({behavior:'smooth',block:'center'}); }
+  }
+
+  function renderFetalWeightChart() {
+    const container = document.getElementById('fetalWeightChart');
+    if(!container) return;
+    const weeks = [8,12,16,20,24,28,32,36,40];
+    const points = weeks.map(w => {
+      const d = fetalData.find(f => f.week === w);
+      const grams = d ? parseFloat(d.weight.replace(/[^0-9.]/g,'')) * 1000 || 0 : 0;
+      return {week:w, grams};
+    });
+    const maxG = Math.max(...points.map(p=>p.grams), 100);
+    container.innerHTML = points.map(p => {
+      const h = Math.max(6, (p.grams/maxG)*100);
+      return `<div class="chart-bar-wrapper"><div class="chart-value">${p.grams>=1000?(p.grams/1000).toFixed(1)+'kg':p.grams+'g'}</div><div class="chart-bar pink-bar" style="height:${h}px;"></div><div class="chart-label">Mg ${p.week}</div></div>`;
+    }).join('');
+  }
+
+  function renderBabyWeightChart() {
+    const container = document.getElementById('babyWeightChart');
+    if(!container) return;
+    const months = [0,1,2,3,4,5,6,8,10,12];
+    const points = months.map(m => {
+      const d = postnatalData.find(p => p.month === m);
+      return d ? {month:m, wtM:d.wtM, wtF:d.wtF} : {month:m, wtM:0, wtF:0};
+    });
+    const maxW = Math.max(...points.flatMap(p=>[p.wtM, p.wtF]), 1);
+    container.innerHTML = points.map(p => {
+      const hM = Math.max(6, (p.wtM/maxW)*100);
+      const hF = Math.max(6, (p.wtF/maxW)*100);
+      return `<div class="chart-bar-wrapper"><div class="chart-value" style="font-size:0.65rem;">♂${p.wtM.toFixed(1)} ♀${p.wtF.toFixed(1)}</div><div style="display:flex;gap:3px;"><div class="chart-bar purple-bar" style="height:${hM}px;width:16px;" title="Lelaki"></div><div class="chart-bar pink-bar" style="height:${hF}px;width:16px;" title="Perempuan"></div></div><div class="chart-label">${p.month===0?'BBL':p.month+'bln'}</div></div>`;
+    }).join('');
+  }
+
+  function populatePostnatalTable() {
+    const tbody = document.querySelector('#postnatalTable tbody');
+    if(!tbody) return;
+    tbody.innerHTML = postnatalData.map(d => `<tr><td><strong>${d.month===0?'Baru Lahir':d.month}</strong></td><td>${d.wtM.toFixed(1)}</td><td>${d.wtF.toFixed(1)}</td><td>${d.lenM.toFixed(1)}</td><td>${d.lenF.toFixed(1)}</td><td>${d.hcM.toFixed(1)}</td><td>${d.hcF.toFixed(1)}</td></tr>`).join('');
+  }
+
+  // ========== TAB SWITCHING ==========
+  function switchTab(tabName) {
+    document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('active'));
+    const targetView = document.getElementById('view' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
+    const targetBtn = document.querySelector(`.main-tab-btn[data-tab="${tabName}"]`);
+    if (targetView) targetView.classList.add('active');
+    if (targetBtn) targetBtn.classList.add('active');
+
+    // Clear timers when leaving dashboard
+    if (tabName !== 'dashboard') {
+      if (_bfTimerInterval) { clearInterval(_bfTimerInterval); _bfTimerInterval = null; }
+      if (_ctTimerInterval) { clearInterval(_ctTimerInterval); _ctTimerInterval = null; }
+    }
+
+    if (tabName === 'growth') renderGrowthView();
+    if (tabName === 'baby') renderVaccineReminder();
+    if (tabName === 'lists') { renderShopList(); renderBagList(); renderBabyHomeList(); renderPantangTips(); renderPantangHabits(); renderUriChecks(); }
+    if (tabName === 'dashboard') {
+      renderCountdown();
+      renderProgressRings();
+      renderKickCounter();
+      renderContractionTimer();
+      renderBreastfeedingTracker();
+      renderAppointments();
+    }
+  }
+
+  // ========== INIT ==========
+  function init() {
+    // Load stored dates
+    const lmpStored = Storage.get('lmp');
+    const eddStored = Storage.get('edd');
+    const birthStored = Storage.get('birthDate');
+    if (lmpStored) currentEDD = DateUtils.addDays(new Date(lmpStored), 280);
+    else if (eddStored) {
+      currentEDD = new Date(eddStored);
+      Storage.set('lmp', DateUtils.fmt(DateUtils.addDays(currentEDD, -280)));
+    } else {
+      currentEDD = new Date('2026-07-18');
+      Storage.set('edd','2026-07-18'); Storage.set('lmp','2025-10-11');
+    }
+    currentBirthDate = birthStored ? new Date(birthStored) : null;
+    document.getElementById('lmpInput').value = Storage.get('lmp')||'';
+    document.getElementById('eddInput').value = DateUtils.fmt(currentEDD);
+    if(currentBirthDate && !isNaN(currentBirthDate.getTime())) document.getElementById('birthInput').value = DateUtils.fmt(currentBirthDate);
+
+    // Date input events
+    document.getElementById('lmpInput').addEventListener('change', function(){
+      let val = this.value;
+      if(val){
+        let lmp = new Date(val);
+        if(!isNaN(lmp.getTime())){
+          currentEDD = DateUtils.addDays(lmp, 280);
+          Storage.set('lmp',val); Storage.set('edd',DateUtils.fmt(currentEDD));
+          document.getElementById('eddInput').value = DateUtils.fmt(currentEDD);
+          switchTab('dashboard'); renderVaccineReminder();
+        }
+      }
+    });
+    document.getElementById('eddInput').addEventListener('change', function(){
+      let val = this.value;
+      currentEDD = DateUtils.safeDate(val, '2026-07-18');
+      Storage.set('edd', DateUtils.fmt(currentEDD));
+      const lmp = DateUtils.addDays(currentEDD, -280);
+      Storage.set('lmp', DateUtils.fmt(lmp));
+      document.getElementById('lmpInput').value = DateUtils.fmt(lmp);
+      switchTab('dashboard'); renderVaccineReminder();
+    });
+    document.getElementById('birthInput').addEventListener('change', function(){
+      let val = this.value;
+      if(val){
+        currentBirthDate = new Date(val);
+        if(isNaN(currentBirthDate.getTime())) currentBirthDate = null;
+      } else currentBirthDate = null;
+      Storage.set('birthDate', currentBirthDate ? DateUtils.fmt(currentBirthDate) : null);
+      switchTab('dashboard'); renderVaccineReminder();
+    });
+
+    // Global click handlers
+    document.body.addEventListener('click', function(e){
+      if(e.target.id==='exportPdfBtn') { e.preventDefault(); exportPDF(); }
+      if(e.target.id==='addItemBtn') { /* shop add logic */ }
+      if(e.target.classList.contains('recipe-btn')) alert(e.target.dataset.recipe);
+      if(e.target.classList.contains('grocery-btn')) { /* modal */ }
+    });
+    // Tab buttons
+    document.querySelectorAll('.main-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    // Growth slider events
+    document.getElementById('growthWeekSlider').addEventListener('input', function(){
+      growthWeek = parseInt(this.value);
+      document.getElementById('growthWeekDisplay').textContent = `Minggu ${growthWeek}`;
+      renderFetalInfo();
+      highlightTableRow();
+    });
+    document.getElementById('growthPrevBtn').addEventListener('click', ()=> changeGrowthWeek(-1));
+    document.getElementById('growthNextBtn').addEventListener('click', ()=> changeGrowthWeek(1));
+
+    // Accordions
+    document.querySelectorAll('.accordion-header').forEach(h => {
+      h.addEventListener('click', function(){
+        const body = this.nextElementSibling;
+        const isOpen = body.classList.contains('open');
+        document.querySelectorAll('.accordion-body').forEach(b => b.classList.remove('open'));
+        document.querySelectorAll('.accordion-header .arrow').forEach(a => a.textContent = '▼');
+        if (!isOpen) {
+          body.classList.add('open');
+          this.querySelector('.arrow').textContent = '▲';
+        }
+      });
+    });
+
+    // Initial render
+    switchTab('dashboard');
+    renderMealGrid();
+    renderKkmContent();
+    // Pre-populate growth data
+    populateFetalTable();
+    populatePostnatalTable();
+    renderFetalWeightChart();
+    renderBabyWeightChart();
+
+    if(window.Notification && Notification.permission === 'default') Notification.requestPermission();
+  }
+
+  function exportPDF() {
+    const w = window.open('','_blank','width=800,height=600');
+    w.document.write(`<html><head><meta charset="utf-8"><title>Laporan BungaTracker</title></head><body><h2>🌸 Laporan BungaTracker</h2><p>${new Date().toLocaleDateString()}</p><pre>${JSON.stringify({kick:Storage.get('kickData'),appt:Storage.get('appointments')},null,2)}</pre></body></html>`);
+    w.document.close(); setTimeout(()=>w.print(),400);
+  }
+
+  window.addEventListener('beforeunload', ()=>{
+    if(_bfTimerInterval) clearInterval(_bfTimerInterval);
+    if(_ctTimerInterval) clearInterval(_ctTimerInterval);
+  });
+
+  init();
+})();
+</script>
+</body>
+</html>
